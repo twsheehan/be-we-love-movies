@@ -23,6 +23,13 @@ Keep-Alive: timeout=5
 
 // TODO update JSON response once properly setup.
 
+## Database setup
+
+1. Set up a new ElephantSQL database instance by following the instructions in the "PostgreSQL: Creating & Deleting Databases" checkpoint.
+1. In your `.env` file, set the `DATABASE_URL` to the database connection url for your new database
+1. Run `npx knex migrate:latest` to migrate the database schema
+1. Run `npx knex seed:run` to seed some article data into the database
+
 ## Technology Stack
 
 - Node.js backend Server with Express JS web framework.
