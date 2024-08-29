@@ -1,20 +1,38 @@
 const db = require("../db/connection");
+const reduceProperties = require("../utils/reduce-properties");
 
 const tableName = "reviews";
 
 async function destroy(reviewId) {
-  // TODO: Write your code here
-  
+  return db(tableName).where({ review_id: reviewId }).del();
 }
 
+const reduceReviews = reduceProperties("critic_id", {
+  created_at: ["critic", null, "created_at"],
+  critic_id: ["critic", null, "critic_id"],
+  preferred_name: ["critic", null, "preferred_name"],
+  surname: ["critic", null, "surname"],
+  organization_name: ["critic", null, "organization_name"],
+  updated_at: ["critic", null, "updated_at"],
+});
+
 async function list(movie_id) {
-  // TODO: Write your code here
-  
+  return db(`${tableName} as r`)
+    .where({ movie_id })
+    .join("critics as c", "r.critic_id", "c.critic_id")
+    .then(reduceReviews)
+    .then((data) => {
+      data.map((review) => {
+        const newReview = { ...review };
+        const critic = review.critic[0];
+        newReview.critic = critic;
+        return newReview;
+      });
+    });
 }
 
 async function read(reviewId) {
-  // TODO: Write your code here
-  
+  return db(tableName).select("*").where({ review_id: reviewId }).first();
 }
 
 async function readCritic(critic_id) {
