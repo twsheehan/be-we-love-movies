@@ -7,23 +7,22 @@ async function movieExists(request, response, next) {
     response.locals.movie = movie;
     return next();
   }
-
-  next({ status: 400, message: "Movie cannot be found." });
+  next({ status: 404, message: "Movie cannot be found." });
 }
 
 async function read(request, response) {
-  const { movie: data } = res.locals;
+  const { movie: data } = response.locals;
   response.json({ data });
 }
 
-async function list(request, response) {
+async function list(request, response, next) {
   const isShowing = request.query.is_showing;
   const data = await service.list(isShowing);
   response.json({ data });
 }
 
 module.exports = {
-  movieExists,
   list: [asyncErrorBoundary(list)],
   read: [asyncErrorBoundary(movieExists), read],
+  movieExists,
 };
