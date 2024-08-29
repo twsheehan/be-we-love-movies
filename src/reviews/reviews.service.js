@@ -21,14 +21,14 @@ async function list(movie_id) {
     .where({ movie_id })
     .join("critics as c", "r.critic_id", "c.critic_id")
     .then(reduceReviews)
-    .then((data) => {
+    .then((data) =>
       data.map((review) => {
         const newReview = { ...review };
         const critic = review.critic[0];
         newReview.critic = critic;
         return newReview;
-      });
-    });
+      })
+    );
 }
 
 async function read(reviewId) {
