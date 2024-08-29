@@ -1,8 +1,10 @@
 const db = require("../db/connection");
 
+const tableName = "movies";
+
 async function list(is_showing) {
-  return db("movies")
-    .select("movies.*")
+  return db(`${tableName}`)
+    .select(`${tableName}.*`)
     .modify((queryBuilder) => {
       if (is_showing) {
         queryBuilder
@@ -18,8 +20,7 @@ async function list(is_showing) {
 }
 
 async function read(movie_id) {
-  // TODO: Add your code here
-  
+  return await db(tableName).select("*").where({ movie_id }).first();
 }
 
 module.exports = {
