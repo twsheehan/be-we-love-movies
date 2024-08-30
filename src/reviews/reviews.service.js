@@ -30,7 +30,6 @@ async function list(movie_id) {
       })
     );
 }
-
 async function read(reviewId) {
   return db(tableName).select("*").where({ review_id: reviewId }).first();
 }
@@ -45,11 +44,25 @@ async function setCritic(review) {
 }
 
 async function update(review) {
-  return db(tableName)
+  const reviewToUpdate = {
+    review_id: review.review_id,
+    content: review.content,
+    score: review.score,
+    critic_id: review.critic_id,
+    movie_id: review.movie_id,
+    true: review.true,
+  };
+
+  return db("reviews")
     .where({ review_id: review.review_id })
-    .update(review, "*")
+    .update(reviewToUpdate, "*")
     .then(() => read(review.review_id))
-    .then(setCritic);
+    .then(setCritic)
+    .then((updatedReview) => ({
+      ...updatedReview,
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
+    }));
 }
 
 module.exports = {
